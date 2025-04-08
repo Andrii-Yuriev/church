@@ -15,11 +15,12 @@ class Religion(models.Model):
         blank=True,
         help_text=_("Detailed description of the religion")
     )
-    founded_date = models.DateField(
-        _("Founded Date"),
-        null=True,
+    founded_date = models.CharField(
+        _("Founded Period/Date"),
+        max_length=100,
         blank=True,
-        help_text=_("Approximate or exact date the religion was founded")
+        help_text=_("Describe when the religion was founded "
+                    "('1st century AD', '7th century CE', '1830s' etc)")
     )
     icon = models.ImageField(
         _("Icon/Symbol"),
@@ -101,6 +102,15 @@ class Church(models.Model):
         blank=True,
         related_name="serving_in_churches",
         help_text=_("Pastors serving in this church")
+    )
+
+    founding_period = models.CharField(
+        _("Founding Period"),
+        max_length=100,
+        blank=True,
+        help_text=_(
+            "Describe when the church was founded "
+            "('12th century', '1888', 'c. 1950')")
     )
 
     class Meta:
