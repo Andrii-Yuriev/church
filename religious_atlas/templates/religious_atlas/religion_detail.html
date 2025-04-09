@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}{{ religion.name }}{% endblock %}
+
+{% block content %}
+  <h1>{{ religion.name }}</h1>
+
+  {% if religion.icon %}
+    <img src="{{ religion.icon.url }}" alt="{{ religion.name }} icon"
+         style="max-width: 100px; float: right;">
+  {% endif %}
+  <p><strong>Founded
+    date:</strong> {{ religion.founded_date|default:"No info" }}</p>
+  <p><strong>Description:</strong></p>
+  <p>{{ religion.description|linebreaks|default:"No description." }}</p>
+  <hr>
+  <h2>Church for this religion</h2>
+  {% if related_churches %}
+    <ul>
+      {% for church in related_churches %}
+        <li>{{ church.name }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No info for churches in this religion.</p>
+  {% endif %}
+
+  <hr>
+  <a href="{% url 'religious_atlas:religion_list' %}">Back to religions
+    list.</a>
+
+{% endblock %}

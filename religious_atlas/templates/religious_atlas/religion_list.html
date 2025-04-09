@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Religions List{% endblock %}
+
+{% block content %}
+  <h1>Religions List</h1>
+
+  <form method="get" action="{% url 'religious_atlas:religion_list' %}">
+    <label>
+      <input type="text" name="q" placeholder="Search for religion..."
+             value="{{ search_query }}">
+    </label>
+    <button type="submit">Search</button>
+  </form>
+  <hr>
+
+  {% if religions %}
+    <ul>
+      {% for religion in religions %}
+        <li>
+          <a href="{% url 'religious_atlas:religion_detail' pk=religion.pk %}">
+            {{ religion.name }}
+          </a>
+          {% if religion.founded_date %}({{ religion.founded_date }}
+            ){% endif %}
+          <p>{{ religion.description|truncatewords:20 }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No religions found.{% if search_query %} For your query "
+      {{ search_query }}".{% endif %}</p>
+  {% endif %}
+  {% include "includes/pagination.html" %}
+
+{% endblock %}

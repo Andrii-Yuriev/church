@@ -1,0 +1,16 @@
+<nav>
+  <a href="#">Релігійний Атлас (Лого)</a>
+  <ul>
+    <li><a href="{% url 'religious_atlas:religion_list' %}">Релігії
+      ({{ religion_count }})</a></li>
+    <li><a href="#">Церкви ({{ church_count }})</a></li>
+    <li><a href="#">Пастори ({{ pastor_count }})</a></li>
+    <li><a href="#">Учні ({{ disciple_count }})</a></li>
+    {% if user.is_authenticated %}
+      <li><a href="{% url 'logout' %}">Logout ({{ user.username }})</a></li>
+    {% else %}
+      <li><a href="{% url 'login' %}">Login</a></li>
+    {% endif %}
+  </ul>
+</nav>
+<hr> <!-- Тимчасовий роздільник -->
