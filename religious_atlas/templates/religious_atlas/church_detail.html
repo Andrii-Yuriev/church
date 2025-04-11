@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}{{ church.name }}{% endblock %}
+
+{% block content %}
+  <h1>{{ church.name }}</h1>
+
+  {% if church.photo %}
+    <img src="{{ church.photo.url }}" alt="Photo {{ church.name }}"
+         style="max-width: 200px; float: right; margin-left: 15px;">
+  {% endif %}
+
+  {% if church.religion %}
+    <p><strong>Religion:</strong> {{ church.religion.name }}</p>
+  {% endif %}
+  {% if church.founding_period %}
+    <p><strong>Founded:</strong> {{ church.founding_period }}</p>
+  {% endif %}
+
+
+  <p><strong>Description:</strong></p>
+  <p>{{ church.description|linebreaks|default:"No description." }}</p>
+  <div style="clear: both;"></div>
+  <hr>
+
+  <h2>Pastors for this church</h2>
+  {% if related_pastors %}
+    <ul>
+      {% for pastor in related_pastors %}
+        <li>
+          {{ pastor.get_full_name|default:pastor.username }}
+          {% if pastor.religion %}({{ pastor.religion.name }}){% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No information about pastors for this church</p>
+  {% endif %}
+  <hr>
+
+  <a href="{% url 'religious_atlas:church_list' %}">Back to churches list</a>
+  <br>
+  <a href="{% url 'religious_atlas:religion_list' %}">Back to religions
+    list</a>
+
+{% endblock %}

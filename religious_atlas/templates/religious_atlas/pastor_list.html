@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Pastors list{% endblock %}
+
+{% block content %}
+  <h1>Pastors list</h1>
+
+  <form method="get" action="{% url 'religious_atlas:pastor_list' %}">
+    <label>
+      <input type="text" name="q" placeholder="Search for pastor..."
+             value="{{ search_query }}">
+    </label>
+    <button type="submit">Search</button>
+  </form>
+  <hr>
+
+  {% if pastors %}
+    <ul>
+      {% for pastor in pastors %}
+        <li>
+          <a href="{% url 'religious_atlas:pastor_detail' pk=pastor.pk %}">
+            {{ pastor.get_full_name|default:pastor.username }}
+          </a>
+          {% if pastor.religion %}
+            ({{ pastor.religion.name }})
+          {% endif %}
+          {% if pastor.email %}<small> - {{ pastor.email }}</small>{% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No pastors found.{% if search_query %} No matches for your query."
+      {{ search_query }}".{% endif %}</p>
+  {% endif %}
+
+  {% include "includes/pagination.html" %}
+
+{% endblock %}

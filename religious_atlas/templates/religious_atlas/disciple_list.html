@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Disciples list{% endblock %}
+
+{% block content %}
+  <h1>Disciples list</h1>
+
+  {# Форма пошуку #}
+  <form method="get" action="{% url 'religious_atlas:disciple_list' %}">
+    <label>
+      <input type="text" name="q" placeholder="Search for disciple..."
+             value="{{ search_query }}">
+    </label>
+    <button type="submit">Find</button>
+  </form>
+  <hr>
+
+  {% if disciples %}
+    <table>
+      <thead>
+      <tr>
+        <th>First_name</th>
+        <th>Last_name</th>
+        <th>Email</th>
+        <th>Church</th>
+        <th>Pastor</th>
+        <th>Date joined</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for disciple in disciples %}
+        <tr>
+          <td>{{ disciple.first_name }}</td>
+          <td>{{ disciple.last_name }}</td>
+          <td>{{ disciple.email|default:"-" }}</td>
+          <td>
+            {% if disciple.church %}
+              <a href="{% url "religious_atlas:church_detail" pk=disciple.church.pk %}">{{ disciple.church.name }}</a>
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td>
+            {% if disciple.mentor_pastor %}
+              <a href="{% url "religious_atlas:pastor_detail" pk=disciple.mentor_pastor.pk %}">{{ disciple.mentor_pastor.get_full_name|default:disciple.mentor_pastor.username }}</a>
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td>{{ disciple.joining_date|date:"d.m.Y"|default:"-" }}</td>
+
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No disciples found.{% if search_query %} No matches for your search
+      query."
+      {{ search_query }}".{% endif %}</p>
+  {% endif %}
+
+  {% include "includes/pagination.html" %}
+
+{% endblock %}

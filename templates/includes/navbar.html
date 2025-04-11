@@ -1,11 +1,14 @@
 <nav>
-  <a href="#">Релігійний Атлас (Лого)</a>
+  <a href="#">Religious Atlas</a>
   <ul>
-    <li><a href="{% url 'religious_atlas:religion_list' %}">Релігії
+    <li><a href="{% url 'religious_atlas:religion_list' %}">Religious
       ({{ religion_count }})</a></li>
-    <li><a href="#">Церкви ({{ church_count }})</a></li>
-    <li><a href="#">Пастори ({{ pastor_count }})</a></li>
-    <li><a href="#">Учні ({{ disciple_count }})</a></li>
+    <li><a href="{% url 'religious_atlas:church_list' %}">Churches
+      ({{ church_count }})</a></li>
+    <li><a href="{% url 'religious_atlas:pastor_list' %}">Pastors
+      ({{ pastor_count }})</a></li>
+    <li><a href="{% url 'religious_atlas:disciple_list' %}">Disciples
+      ({{ disciple_count }})</a></li>
     {% if user.is_authenticated %}
       <li><a href="{% url 'logout' %}">Logout ({{ user.username }})</a></li>
     {% else %}
@@ -13,4 +16,4 @@
     {% endif %}
   </ul>
 </nav>
-<hr> <!-- Тимчасовий роздільник -->
+<hr>

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {{ pastor.get_full_name|default:pastor.username }}{% endblock %}
+
+{% block content %}
+  <h1>{{ pastor.get_full_name|default:pastor.username }}</h1>
+
+  {% if pastor.photo %}
+    <img src="{{ pastor.photo.url }}"
+         alt="Photo {{ pastor.get_full_name|default:pastor.username }}"
+         style="max-width: 150px; float: right; margin-left: 15px;">
+  {% endif %}
+
+  <p><strong>Username:</strong> {{ pastor.username }}</p>
+  {% if pastor.email %}<p><strong>Email:</strong> {{ pastor.email }}</p>
+  {% endif %} {# Показувати email? #}
+  {% if pastor.religion %}
+    <p><strong>Religious:</strong>
+      <a href="{% url 'religious_atlas:religion_detail' pk=pastor.religion.pk %}">{{ pastor.religion.name }}</a>
+    </p>
+  {% endif %}
+  {% if pastor.date_joined %}<p><strong>Date joined (on
+    site):</strong> {{ pastor.date_joined|date:"d M Y" }}</p>{% endif %}
+
+  <p><strong>Biography:</strong></p>
+  <p>{{ pastor.bio|linebreaks|default:"No Biography." }}</p>
+
+  <div style="clear: both;"></div>
+  <hr>
+
+  <h2>Serve in churches:</h2>
+  {% if serving_churches %}
+    <ul>
+      {% for church in serving_churches %}
+        <li>
+          <a href="{% url 'religious_atlas:church_detail' pk=church.pk %}">{{ church.name }}</a>
+          {% if church.religion %}({{ church.religion.name }}){% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p> No information about churches, where this pastors serves</p>
+  {% endif %}
+
+  <hr>
+  <h2>Disciples:</h2>
+  {% if mentors %}
+    <ul>
+      {% for disciple in mentors %}
+        <li>
+          {{ disciple.full_name }}
+          {% if disciple.church %}(з
+            <a href="{% url 'religious_atlas:church_detail' pk=disciple.church.pk %}">{{ disciple.church.name }}</a>
+            ){% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No information about disciples for this pastor</p>
+  {% endif %}
+  <hr>
+  <a href="{% url 'religious_atlas:pastor_list' %}">Back to pastors list</a>
+
+{% endblock %}
