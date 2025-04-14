@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Submit deleting{% endblock %}
+
+{% block content %}
+  <h1>Видалити {{ object_type|lower }}</h1>
+
+  <p>Are you really want to delete {{ object_type|lower }} "{{ object_name }}"?</p>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Yes, delete</button>
+    {# Використовуємо cancel_url з контексту #}
+    {% if cancel_url %}
+         <a href="{{ cancel_url }}">No, back</a>
+    {% endif %}
+  </form>
+
+{% endblock %}

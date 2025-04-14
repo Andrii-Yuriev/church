@@ -1,6 +1,11 @@
 from django.db.models import Q
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView
+
 from .models import Religion, Church, Pastor, Disciple
+from .forms import ReligionForm, ChurchForm, PastorUpdateForm, DiscipleForm
 
 
 def get_common_counts():
@@ -50,6 +55,43 @@ class ReligionDetailView(DetailView):
         return context
 
 
+class ReligionCreateView(LoginRequiredMixin, CreateView):
+    model = Religion
+    form_class = ReligionForm
+    template_name = "religious_atlas/religion_form.html"
+    success_url = reverse_lazy("religious_atlas:religion_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(get_common_counts())
+        context["view_title"] = "Add new religion"
+        return context
+
+
+class ReligionUpdateView(LoginRequiredMixin, UpdateView):
+    model = Religion
+    form_class = ReligionForm
+    template_name = "religious_atlas/religion_form.html"
+    success_url = reverse_lazy("religious_atlas:religion_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(get_common_counts())
+        context["view_title"] = f"Edit {self.object.name}"
+        return context
+
+
+class ReligionDeleteView(LoginRequiredMixin, DeleteView):
+    model = Religion
+    template_name = "religious_atlas/religion_confirm_delete.html"
+    success_url = reverse_lazy("religious_atlas:religion_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(get_common_counts())
+        return context
+
+
 class ChurchListView(ListView):
     model = Church
     template_name = "religious_atlas/church_list.html"
@@ -85,6 +127,51 @@ class ChurchDetailView(DetailView):
         church_object = self.get_object()
         context["related_pastors"] = church_object.pastors.prefetch_related(
             "religion").all()
+        return context
+
+
+class ChurchCreateView(LoginRequiredMixin, CreateView):
+    model = Church
+    form_class = ChurchForm
+    template_name = "religious_atlas/generic_form.html"
+    success_url = reverse_lazy("religious_atlas:church_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(get_common_counts())
+        context["view_title"] = "Add new church"
+        context["cancel_url"] = reverse_lazy("religious_atlas:church_list")
+        return context
+
+
+class ChurchUpdateView(LoginRequiredMixin, UpdateView):
+    model = Church
+    form_class = ChurchForm
+    template_name = "religious_atlas/generic_form.html"
+    success_url = reverse_lazy("religious_atlas:church_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(get_common_counts())
+        context["view_title"] = f"Edit: {self.object.name}"
+        # Передаємо URL для кнопки "Скасувати" (на детальну сторінку)
+        context["cancel_url"] = reverse_lazy("religious_atlas:church_detail",
+                                             kwargs={"pk": self.object.pk})
+        return context
+
+
+class ChurchDeleteView(LoginRequiredMixin, DeleteView):
+    model = Church
+    template_name = "religious_atlas/generic_confirm_delete.html"
+    success_url = reverse_lazy("religious_atlas:church_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(get_common_counts())
+        context["object_type"] = "Church"
+        context["object_name"] = self.object.name
+        context["cancel_url"] = reverse_lazy("religious_atlas:church_detail",
+                                             kwargs={"pk": self.object.pk})
         return context
 
 
@@ -137,6 +224,50 @@ class PastorDetailView(DetailView):
         return context
 
 
+class PastorUpdateView(LoginRequiredMixin, UpdateView):
+    model = Pastor
+    form_class = PastorUpdateForm
+    template_name = "religious_atlas/generic_form.html"
+
+    def get_success_url(self):
+        return reverse_lazy("religious_atlas:pastor_detail",
+                            kwargs={"pk": self.object.pk})
+
+    def get_queryset(self):
+        return super().get_queryset().filter(is_superuser=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(get_common_counts())
+        context[
+            "view_title"] = f"Edit profile: {self.object.get_full_name()
+                                             or self.object.username}"
+        context[
+            "cancel_url"] = self.get_success_url()
+        return context
+
+
+class PastorDeleteView(LoginRequiredMixin, DeleteView):
+    model = Pastor
+    template_name = "religious_atlas/generic_confirm_delete.html"
+    success_url = reverse_lazy(
+        "religious_atlas:pastor_list")
+
+    def get_queryset(self):
+        return super().get_queryset().filter(is_superuser=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(get_common_counts())
+        context["object_type"] = "Pastor"
+        context[
+            "object_name"] = (self.object.get_full_name()
+                              or self.object.username)
+        context['cancel_url'] = reverse_lazy("religious_atlas:pastor_detail",
+                                             kwargs={"pk": self.object.pk})
+        return context
+
+
 class DiscipleListView(ListView):
     model = Disciple
     template_name = "religious_atlas/disciple_list.html"
@@ -169,4 +300,46 @@ class DiscipleListView(ListView):
         context.update(get_common_counts())
         context['search_query'] = self.request.GET.get('q',
                                                        '')
+        return context
+
+
+class DiscipleCreateView(LoginRequiredMixin, CreateView):
+    model = Disciple
+    form_class = DiscipleForm
+    template_name = "religious_atlas/generic_form.html"
+    success_url = reverse_lazy("religious_atlas:disciple_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(get_common_counts())
+        context["view_title"] = "Add new disciple"
+        context["cancel_url"] = reverse_lazy("religious_atlas:disciple_list")
+        return context
+
+
+class DiscipleUpdateView(LoginRequiredMixin, UpdateView):
+    model = Disciple
+    form_class = DiscipleForm
+    template_name = "religious_atlas/generic_form.html"
+    success_url = reverse_lazy("religious_atlas:disciple_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(get_common_counts())
+        context["view_title"] = f"Edit: {self.object.full_name}"
+        context["cancel_url"] = reverse_lazy("religious_atlas:disciple_list")
+        return context
+
+
+class DiscipleDeleteView(LoginRequiredMixin, DeleteView):
+    model = Disciple
+    template_name = "religious_atlas/generic_confirm_delete.html"
+    success_url = reverse_lazy("religious_atlas:disciple_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(get_common_counts())
+        context["object_type"] = "Disciple"
+        context["object_name"] = self.object.full_name
+        context["cancel_url"] = reverse_lazy("religious_atlas:disciple_list")
         return context

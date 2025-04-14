@@ -4,8 +4,12 @@
 
 {% block content %}
   <h1>Disciples list</h1>
+  {% if user.is_authenticated %}
+    <p>
+      <a href="{% url 'religious_atlas:disciple_add' %}">Add new disciple</a>
+    </p>
+  {% endif %}
 
-  {# Форма пошуку #}
   <form method="get" action="{% url 'religious_atlas:disciple_list' %}">
     <label>
       <input type="text" name="q" placeholder="Search for disciple..."
@@ -25,6 +29,8 @@
         <th>Church</th>
         <th>Pastor</th>
         <th>Date joined</th>
+        {% if user.is_authenticated %}
+          <th>Edit/Delete</th>{% endif %}
       </tr>
       </thead>
       <tbody>
@@ -48,7 +54,14 @@
             {% endif %}
           </td>
           <td>{{ disciple.joining_date|date:"d.m.Y"|default:"-" }}</td>
-
+          {% if user.is_authenticated %}
+            <td>
+              <a href="{% url 'religious_atlas:disciple_edit' pk=disciple.pk %}">Edit</a>
+              |
+              <a href="{% url 'religious_atlas:disciple_delete' pk=disciple.pk %}"
+                 style="color: red;">Delete</a>
+            </td>
+          {% endif %}
         </tr>
       {% endfor %}
       </tbody>

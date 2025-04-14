@@ -5,6 +5,12 @@
 {% block content %}
   <h1>Religions List</h1>
 
+  {% if user.is_authenticated %}
+  <p>
+      <a href="{% url 'religious_atlas:religion_add' %}">Add new religion</a>
+  </p>
+  {% endif %}
+
   <form method="get" action="{% url 'religious_atlas:religion_list' %}">
     <label>
       <input type="text" name="q" placeholder="Search for religion..."

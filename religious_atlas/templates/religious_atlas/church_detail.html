@@ -4,6 +4,15 @@
 
 {% block content %}
   <h1>{{ church.name }}</h1>
+  {% if user.is_authenticated %}
+    <p>
+      <a href="{% url 'religious_atlas:church_edit' pk=church.pk %}">Edit</a>
+      |
+      <a href="{% url 'religious_atlas:church_delete' pk=church.pk %}"
+         style="color: red;">Delete</a>
+    </p>
+    <hr>
+  {% endif %}
 
   {% if church.photo %}
     <img src="{{ church.photo.url }}" alt="Photo {{ church.name }}"

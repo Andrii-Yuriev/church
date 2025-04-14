@@ -5,6 +5,16 @@
 {% block content %}
   <h1>{{ religion.name }}</h1>
 
+  {% if user.is_authenticated %}
+    <p>
+      <a href="{% url 'religious_atlas:religion_edit' pk=religion.pk %}">Edit</a>
+      |
+      <a href="{% url 'religious_atlas:religion_delete' pk=religion.pk %}"
+         style="color: red;">Delete</a>
+    </p>
+    <hr>
+  {% endif %}
+
   {% if religion.icon %}
     <img src="{{ religion.icon.url }}" alt="{{ religion.name }} icon"
          style="max-width: 100px; float: right;">

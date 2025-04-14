@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Submit for deleting religion{% endblock %}
+
+{% block content %}
+  <h1>Delete religion</h1>
+
+  <p>Are you sure to delete religion "{{ object.name }}"?</p>
+  <p><strong>Attention!</strong> If you delete religion you are also delete
+    all churches in this religion.</p>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Yes, delete</button>
+    <a href="{% url 'religious_atlas:religion_detail' pk=object.pk %}">No,
+      back</a>
+  </form>
+{% endblock %}

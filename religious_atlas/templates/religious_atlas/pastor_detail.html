@@ -6,6 +6,17 @@
 {% block content %}
   <h1>{{ pastor.get_full_name|default:pastor.username }}</h1>
 
+  {% if user.is_authenticated %}
+    <p>
+      <a href="{% url 'religious_atlas:pastor_edit' pk=pastor.pk %}">Edit
+        profile</a>
+      |
+      <a href="{% url 'religious_atlas:pastor_delete' pk=pastor.pk %}"
+         style="color: red;">Delete</a>
+    </p>
+    <hr>
+  {% endif %}
+
   {% if pastor.photo %}
     <img src="{{ pastor.photo.url }}"
          alt="Photo {{ pastor.get_full_name|default:pastor.username }}"

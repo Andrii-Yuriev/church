@@ -4,6 +4,11 @@
 
 {% block content %}
   <h1>Churches List</h1>
+  {% if user.is_authenticated %}
+  <p>
+      <a href="{% url 'religious_atlas:church_add' %}">Add new church</a>
+  </p>
+  {% endif %}
 
   <form method="get" action="{% url 'religious_atlas:church_list' %}">
     <label>
