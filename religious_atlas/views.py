@@ -3,9 +3,16 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView
+from django.shortcuts import render, redirect
+from django.contrib.auth import login
 
 from .models import Religion, Church, Pastor, Disciple
-from .forms import ReligionForm, ChurchForm, PastorUpdateForm, DiscipleForm
+from .forms import (
+    ReligionForm,
+    ChurchForm,
+    PastorUpdateForm,
+    DiscipleForm,
+    RegistrationForm)
 
 
 def get_common_counts():
@@ -343,3 +350,19 @@ class DiscipleDeleteView(LoginRequiredMixin, DeleteView):
         context["object_name"] = self.object.full_name
         context["cancel_url"] = reverse_lazy("religious_atlas:disciple_list")
         return context
+
+
+def register_view(request):
+    if request.method == "POST":
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect("/")
+        else:
+            pass
+    else:
+        form = RegistrationForm()
+
+    context = {"form": form}
+    return render(request, "registration/register.html", context)

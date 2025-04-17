@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static widget_tweaks %}
+
+{% block title %}Sign In{% endblock %}
+
+{% block content %}
+  <section class="py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-xl-4 col-lg-5 col-md-7">
+          <div class="card z-index-0">
+            <div class="card-header text-center pt-4">
+              <h5>Sign In</h5>
+            </div>
+            <div class="card-body">
+              {% if form.non_field_errors %}
+                <div class="alert alert-danger text-white" role="alert">
+                  {% for error in form.non_field_errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endif %}
+              {% if msg %}
+                <div class="alert alert-info text-white" role="alert">
+                  {{ msg | safe }}
+                </div>
+              {% endif %}
+
+
+              <form role="form" class="text-start" method="post">
+                {% csrf_token %}
+                <div
+                    class="input-group input-group-outline my-3 {% if form.username.errors %}is-invalid{% endif %} {% if form.username.value %}is-filled{% endif %}">
+                  <label class="form-label">Username</label>
+                  {% render_field form.username class="form-control" %}
+                </div>
+                {% for error in form.username.errors %}
+                  <div class="text-danger"><small>{{ error }}</small></div>
+                {% endfor %}
+                <div
+                    class="input-group input-group-outline mb-3 {% if form.password.errors %}is-invalid{% endif %}">
+                  <label class="form-label">Password</label>
+                  {% render_field form.password class="form-control" %}
+                </div>
+                {% for error in form.password.errors %}
+                  <div class="text-danger"><small>{{ error }}</small></div>
+                {% endfor %}
+                <div class="text-center">
+                  <button type="submit"
+                          class="btn bg-gradient-primary w-100 my-4 mb-2">Sign
+                    in
+                  </button>
+                </div>
+                <p class="mt-4 text-sm text-center">
+                  Don't have an account?
+                  <a href="{% url 'register' %}"
+                     class="text-primary text-gradient font-weight-bold">Sign
+                    up</a>
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock content %}

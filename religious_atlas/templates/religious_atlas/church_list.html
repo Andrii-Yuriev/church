@@ -10,14 +10,7 @@
   </p>
   {% endif %}
 
-  <form method="get" action="{% url 'religious_atlas:church_list' %}">
-    <label>
-      <input type="text" name="q" placeholder="Search for church..."
-             value="{{ search_query }}">
-    </label>
-    <button type="submit">Search</button>
-  </form>
-  <hr>
+  {% include "includes/search_form.html" %}
 
   {% if churches %}
     <ul>

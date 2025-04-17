@@ -1,5 +1,9 @@
 from django import forms
 from .models import Religion, Church, Pastor, Disciple
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class ReligionForm(forms.ModelForm):
@@ -30,3 +34,11 @@ class DiscipleForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["mentor_pastor"].queryset = Pastor.objects.filter(
             is_superuser=False)
+
+
+class RegistrationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ("username", "email")

@@ -1,19 +1,89 @@
-<nav>
-  <a href="#">Religious Atlas</a>
-  <ul>
-    <li><a href="{% url 'religious_atlas:religion_list' %}">Religious
-      ({{ religion_count }})</a></li>
-    <li><a href="{% url 'religious_atlas:church_list' %}">Churches
-      ({{ church_count }})</a></li>
-    <li><a href="{% url 'religious_atlas:pastor_list' %}">Pastors
-      ({{ pastor_count }})</a></li>
-    <li><a href="{% url 'religious_atlas:disciple_list' %}">Disciples
-      ({{ disciple_count }})</a></li>
-    {% if user.is_authenticated %}
-      <li><a href="{% url 'logout' %}">Logout ({{ user.username }})</a></li>
-    {% else %}
-      <li><a href="{% url 'login' %}">Login</a></li>
-    {% endif %}
-  </ul>
+{% load static %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white z-index-3 py-3">
+  <div class="container">
+
+    <a class="navbar-brand" href="{% url 'home' %}" rel="tooltip"
+       title="Religious Atlas Home" data-placement="bottom">
+      Religious Atlas
+    </a>
+
+    <button class="navbar-toggler shadow-none ms-2" type="button"
+            data-bs-toggle="collapse" data-bs-target="#navigation"
+            aria-controls="navigation" aria-expanded="false"
+            aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon mt-2">
+        <span class="navbar-toggler-bar bar1"></span>
+        <span class="navbar-toggler-bar bar2"></span>
+        <span class="navbar-toggler-bar bar3"></span>
+      </span>
+    </button>
+
+    <div class="collapse navbar-collapse w-100 pt-3 pb-2 py-lg-0"
+         id="navigation">
+
+      <ul class="navbar-nav navbar-nav-hover ms-auto">
+
+
+        <li class="nav-item mx-2">
+          <a class="nav-link ps-2 d-flex cursor-pointer align-items-center"
+             href="{% url 'religious_atlas:religion_list' %}">
+            <i class="material-icons opacity-6 me-2 text-md">account_balance</i>
+            Religious <span
+              class="badge bg-secondary ms-1">{{ religion_count | default:0 }}</span>
+          </a>
+        </li>
+        <li class="nav-item mx-2">
+          <a class="nav-link ps-2 d-flex cursor-pointer align-items-center"
+             href="{% url 'religious_atlas:church_list' %}">
+            <i class="material-icons opacity-6 me-2 text-md">church</i>
+            Churches <span
+              class="badge bg-secondary ms-1">{{ church_count | default:0 }}</span>
+          </a>
+        </li>
+        <li class="nav-item mx-2">
+          <a class="nav-link ps-2 d-flex cursor-pointer align-items-center"
+             href="{% url 'religious_atlas:pastor_list' %}">
+            <i class="material-icons opacity-6 me-2 text-md">person</i>
+            Pastors <span
+              class="badge bg-secondary ms-1">{{ pastor_count | default:0 }}</span>
+          </a>
+        </li>
+        <li class="nav-item mx-2">
+          <a class="nav-link ps-2 d-flex cursor-pointer align-items-center"
+             href="{% url 'religious_atlas:disciple_list' %}">
+            <i class="material-icons opacity-6 me-2 text-md">groups</i>
+            Disciples <span
+              class="badge bg-secondary ms-1">{{ disciple_count | default:0 }}</span>
+          </a>
+        </li>
+        <li class="nav-item ms-lg-auto d-none d-lg-block">
+          <span class="nav-link">|</span>
+        </li>
+
+        {% if user.is_authenticated %}
+          <li class="nav-item ms-lg-2 d-flex align-items-center">
+            <form method="post" action="{% url 'logout' %}" class="d-inline">
+              {% csrf_token %}
+              <button type="submit"
+                      class="btn btn-link nav-link ps-2 d-flex cursor-pointer align-items-center py-0"
+                      style="text-transform: none; font-size: inherit;">
+                <i class="material-icons opacity-6 me-1 text-md">logout</i>
+                Logout ({{ user.username }})
+              </button>
+            </form>
+          </li>
+        {% else %}
+          <li class="nav-item ms-lg-2">
+            <a class="nav-link ps-2 d-flex cursor-pointer align-items-center"
+               href="{% url 'login' %}">
+              <i class="material-icons opacity-6 me-1 text-md">login</i>
+              Login
+            </a>
+          </li>
+        {% endif %}
+
+      </ul>
+    </div>
+  </div>
 </nav>
-<hr>
