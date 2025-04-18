@@ -1,18 +1,38 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}Submit for deleting religion{% endblock %}
+{% block title %}Confirm Deleting Religion{% endblock %}
 
 {% block content %}
-  <h1>Delete religion</h1>
+  <section class="py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+          <div class="card">
+            <div class="card-header p-3 pt-4">
+              <h5 class="card-title text-center mb-0">Delete Religion</h5>
+            </div>
+            <div class="card-body pt-1">
+              <p class="text-center">Are you sure you want to delete the
+                religion "<strong>{{ object.name }}</strong>"?</p>
 
-  <p>Are you sure to delete religion "{{ object.name }}"?</p>
-  <p><strong>Attention!</strong> If you delete religion you are also delete
-    all churches in this religion.</p>
+              <div class="alert alert-danger text-white mt-3" role="alert">
+                <strong>Attention!</strong> Deleting this religion will also
+                delete all associated churches. This action cannot be undone.
+              </div>
 
-  <form method="post">
-    {% csrf_token %}
-    <button type="submit">Yes, delete</button>
-    <a href="{% url 'religious_atlas:religion_detail' pk=object.pk %}">No,
-      back</a>
-  </form>
+              <form method="post" class="text-center mt-4">
+                {% csrf_token %}
+                <button type="submit" class="btn bg-gradient-danger me-2">Yes,
+                  delete
+                </button>
+                <a href="{% url 'religious_atlas:religion_detail' pk=object.pk %}"
+                   class="btn btn-outline-secondary">No, back</a>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 {% endblock %}

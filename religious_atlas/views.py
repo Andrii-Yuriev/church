@@ -28,7 +28,7 @@ class ReligionListView(ListView):
     model = Religion
     template_name = "religious_atlas/religion_list.html"
     context_object_name = "religions"
-    paginate_by = 1
+    paginate_by = 2
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -103,7 +103,7 @@ class ChurchListView(ListView):
     model = Church
     template_name = "religious_atlas/church_list.html"
     context_object_name = "churches"
-    paginate_by = 1
+    paginate_by = 2
 
     def get_queryset(self):
         queryset = super().get_queryset().select_related("religion")
@@ -186,7 +186,7 @@ class PastorListView(ListView):
     model = Pastor
     template_name = "religious_atlas/pastor_list.html"
     context_object_name = "pastors"
-    paginate_by = 1
+    paginate_by = 2
 
     def get_queryset(self):
         queryset = super().get_queryset().select_related("religion")
@@ -279,7 +279,7 @@ class DiscipleListView(ListView):
     model = Disciple
     template_name = "religious_atlas/disciple_list.html"
     context_object_name = "disciples"
-    paginate_by = 1
+    paginate_by = 2
 
     def get_queryset(self):
         queryset = super().get_queryset().select_related('church',

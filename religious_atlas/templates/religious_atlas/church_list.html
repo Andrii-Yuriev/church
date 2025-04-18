@@ -1,39 +1,102 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Churches List{% endblock %}
 
 {% block content %}
-  <h1>Churches List</h1>
-  {% if user.is_authenticated %}
-  <p>
-      <a href="{% url 'religious_atlas:church_add' %}">Add new church</a>
-  </p>
-  {% endif %}
+  <section class="py-5">
+    <div class="container">
 
-  {% include "includes/search_form.html" %}
-
-  {% if churches %}
-    <ul>
-      {% for church in churches %}
-        <li>
-          <a href="{% url 'religious_atlas:church_detail' pk=church.pk %}">
-            {{ church.name }}
-          </a>
-          {% if church.religion %}
-            (Religion: {{ church.religion.name }})
+      <div class="row mb-4 align-items-center">
+        <div class="col-lg-9 col-md-8">
+          <h1 class="mb-0">Churches List</h1>
+        </div>
+        <div class="col-lg-3 col-md-4 text-md-end">
+          {% if user.is_authenticated %}
+            <a href="{% url 'religious_atlas:church_add' %}"
+               class="btn bg-gradient-primary mb-0">
+              <i class="material-icons text-white opacity-10 me-1">add</i>
+              Add New Church
+            </a>
           {% endif %}
-          {% if church.founding_period %}
-            [{{ church.founding_period }}]
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          {% include "includes/search_form.html" %}
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-12">
+          {% if churches %}
+            {% for church in churches %}
+              <div class="card mb-3">
+                <div class="card-body">
+                  <div class="row align-items-center">
+
+                    {% if church.photo %}
+                      <div class="col-md-3 col-lg-2 mb-3 mb-md-0">
+                        <img src="{{ church.photo.url }}"
+                             alt="{{ church.name }} photo"
+                             class="img-fluid rounded shadow-sm">
+                      </div>
+                    {% endif %}
+                    <div
+                        class="{% if church.photo %}col-md-9 col-lg-10{% else %}col-12{% endif %}">
+                      <h5 class="card-title mb-1">
+                        <a href="{% url 'religious_atlas:church_detail' pk=church.pk %}">
+                          {{ church.name }}
+                        </a>
+                      </h5>
+                      <div class="d-flex flex-wrap text-muted mb-2">
+                        {% if church.religion %}
+                          <small class="me-3"><i
+                              class="material-icons opacity-6 fs-6 me-1">account_balance</i>{{ church.religion.name }}
+                          </small>
+                        {% endif %}
+                        {% if church.founding_period %}
+                          <small><i class="material-icons opacity-6 fs-6 me-1">calendar_today</i>{{ church.founding_period }}
+                          </small> {# Додаємо іконку періоду #}
+                        {% endif %}
+                      </div>
+
+                      <p class="card-text mb-0">{{ church.description|truncatewords:25 }}</p>
+                      <div class="mt-2">
+                        {% if user.is_authenticated %}
+                          <a href="{% url 'religious_atlas:church_edit' pk=church.pk %}"
+                             class="btn btn-sm btn-outline-info mb-0 me-1">Edit</a>
+                          <a href="{% url 'religious_atlas:church_delete' pk=church.pk %}"
+                             class="btn btn-sm btn-outline-danger mb-0">Delete</a>
+                        {% endif %}
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="card">
+              <div class="card-body text-center">
+                <p class="text-muted mb-0">
+                  No churches found.
+                  {% if search_query %}
+                    For your query "<strong>{{ search_query }}</strong>".
+                  {% endif %}
+                </p>
+              </div>
+            </div>
           {% endif %}
-          <p>{{ church.description|truncatewords:20 }}</p>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>Church not found.{% if search_query %} No matches for your query."
-      {{ search_query }}".{% endif %}</p>
-  {% endif %}
+        </div>
+      </div>
+      {% if is_paginated %}
+        <div class="row mt-4">
+          <div class="col-12">
+            {% include "includes/pagination.html" %}
+          </div>
+        </div>
+      {% endif %}
 
-  {% include "includes/pagination.html" %}
-
+    </div>
+  </section>
 {% endblock %}

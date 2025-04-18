@@ -1,31 +1,108 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}Pastors list{% endblock %}
+{% block title %}Pastors List{% endblock %}
 
 {% block content %}
-  <h1>Pastors list</h1>
+  <section class="py-5">
+    <div class="container">
 
-  {% include "includes/search_form.html" %}
+      <div class="row mb-4 align-items-center">
+        <div class="col-12">
+          <h1 class="mb-0">Pastors List</h1>
+        </div>
+      </div>
 
-  {% if pastors %}
-    <ul>
-      {% for pastor in pastors %}
-        <li>
-          <a href="{% url 'religious_atlas:pastor_detail' pk=pastor.pk %}">
-            {{ pastor.get_full_name|default:pastor.username }}
-          </a>
-          {% if pastor.religion %}
-            ({{ pastor.religion.name }})
+      <div class="row">
+        <div class="col-12">
+          {% include "includes/search_form.html" %}
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-12">
+          {% if pastors %}
+            {% for pastor in pastors %}
+              <div class="card mb-3">
+                <div class="card-body">
+                  <div class="row align-items-center">
+
+                    {% if pastor.photo %}
+                      <div class="col-md-3 col-lg-2 mb-3 mb-md-0">
+                        <img src="{{ pastor.photo.url }}"
+                             alt="{{ pastor.get_full_name|default:pastor.username }} photo"
+                             class="img-fluid rounded-circle shadow-sm">
+                      </div>
+                    {% else %}
+                      <div class="col-md-3 col-lg-2 mb-3 mb-md-0 text-center">
+                        <i class="material-icons opacity-3"
+                           style="font-size: 5rem;">account_circle</i>
+                      </div>
+                    {% endif %}
+
+                    <div
+                        class="{% if pastor.photo %}col-md-9 col-lg-10{% else %}col-md-9 col-lg-10{% endif %}">
+                      <h5 class="card-title mb-1">
+                        <a href="{% url 'religious_atlas:pastor_detail' pk=pastor.pk %}">
+                          {{ pastor.get_full_name|default:pastor.username }}
+                        </a>
+                      </h5>
+                      <div
+                          class="d-flex flex-wrap align-items-center text-muted mb-2">
+                        {% if pastor.religion %}
+                          <small class="me-3 d-inline-flex align-items-center">
+                            <i class="material-icons opacity-6 fs-6 me-1">account_balance</i>{{ pastor.religion.name }}
+                          </small>
+                        {% endif %}
+                        {% if pastor.email %}
+                          <small class="d-inline-flex align-items-center">
+                            <i class="material-icons opacity-6 fs-6 me-1">email</i>{{ pastor.email }}
+                          </small>
+                        {% endif %}
+                      </div>
+                      <p class="card-text mb-2">{{ pastor.bio|truncatewords:15 }}</p>
+
+                      <div class="mt-2">
+                        {% if user.is_staff or user.pk == pastor.pk %}
+                          <a href="{% url 'religious_atlas:pastor_edit' pk=pastor.pk %}"
+                             class="btn btn-sm btn-outline-info mb-0 me-1">Edit
+                            Profile</a>
+                          {% if user.is_staff %}
+                            <a href="{% url 'religious_atlas:pastor_delete' pk=pastor.pk %}"
+                               class="btn btn-sm btn-outline-danger mb-0">Delete
+                              User</a>
+                          {% endif %}
+                        {% endif %}
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="card">
+              <div class="card-body text-center">
+                <p class="text-muted mb-0">
+                  No pastors found.
+                  {% if search_query %}
+                    For your query "<strong>{{ search_query }}</strong>".
+                  {% endif %}
+                </p>
+              </div>
+            </div>
           {% endif %}
-          {% if pastor.email %}<small> - {{ pastor.email }}</small>{% endif %}
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>No pastors found.{% if search_query %} No matches for your query."
-      {{ search_query }}".{% endif %}</p>
-  {% endif %}
+        </div>
+      </div>
 
-  {% include "includes/pagination.html" %}
+      {% if is_paginated %}
+        <div class="row mt-4">
+          <div class="col-12">
+            {% include "includes/pagination.html" %}
+          </div>
+        </div>
+      {% endif %}
 
+    </div>
+  </section>
 {% endblock %}

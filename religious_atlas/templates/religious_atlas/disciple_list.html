@@ -1,70 +1,144 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}Disciples list{% endblock %}
+{% block title %}Disciples List{% endblock %}
 
 {% block content %}
-  <h1>Disciples list</h1>
-  {% if user.is_authenticated %}
-    <p>
-      <a href="{% url 'religious_atlas:disciple_add' %}">Add new disciple</a>
-    </p>
-  {% endif %}
+  <section class="py-5">
+    <div class="container">
 
-  {% include "includes/search_form.html" %}
-
-  {% if disciples %}
-    <table>
-      <thead>
-      <tr>
-        <th>First_name</th>
-        <th>Last_name</th>
-        <th>Email</th>
-        <th>Church</th>
-        <th>Pastor</th>
-        <th>Date joined</th>
-        {% if user.is_authenticated %}
-          <th>Edit/Delete</th>{% endif %}
-      </tr>
-      </thead>
-      <tbody>
-      {% for disciple in disciples %}
-        <tr>
-          <td>{{ disciple.first_name }}</td>
-          <td>{{ disciple.last_name }}</td>
-          <td>{{ disciple.email|default:"-" }}</td>
-          <td>
-            {% if disciple.church %}
-              <a href="{% url "religious_atlas:church_detail" pk=disciple.church.pk %}">{{ disciple.church.name }}</a>
-            {% else %}
-              -
-            {% endif %}
-          </td>
-          <td>
-            {% if disciple.mentor_pastor %}
-              <a href="{% url "religious_atlas:pastor_detail" pk=disciple.mentor_pastor.pk %}">{{ disciple.mentor_pastor.get_full_name|default:disciple.mentor_pastor.username }}</a>
-            {% else %}
-              -
-            {% endif %}
-          </td>
-          <td>{{ disciple.joining_date|date:"d.m.Y"|default:"-" }}</td>
+      <div class="row mb-4 align-items-center">
+        <div class="col-lg-9 col-md-8">
+          <h1 class="mb-0">Disciples List</h1>
+        </div>
+        <div class="col-lg-3 col-md-4 text-md-end">
           {% if user.is_authenticated %}
-            <td>
-              <a href="{% url 'religious_atlas:disciple_edit' pk=disciple.pk %}">Edit</a>
-              |
-              <a href="{% url 'religious_atlas:disciple_delete' pk=disciple.pk %}"
-                 style="color: red;">Delete</a>
-            </td>
+            <a href="{% url 'religious_atlas:disciple_add' %}"
+               class="btn bg-gradient-primary mb-0">
+              <i class="material-icons text-white opacity-10 me-1">add</i>
+              Add New Disciple
+            </a>
           {% endif %}
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
-  {% else %}
-    <p>No disciples found.{% if search_query %} No matches for your search
-      query."
-      {{ search_query }}".{% endif %}</p>
-  {% endif %}
+        </div>
+      </div>
 
-  {% include "includes/pagination.html" %}
+      <div class="row">
+        <div class="col-12">
+          {% include "includes/search_form.html" %}
+        </div>
+      </div>
 
+      <div class="row mt-4">
+        <div class="col-12">
+          {% if disciples %}
+            <div class="card">
+              <div class="table-responsive">
+                <table
+                    class="table table-hover table-striped align-items-center mb-0">
+                  <thead>
+                  <tr>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                      Full Name
+                    </th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                      Email
+                    </th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                      Church
+                    </th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                      Mentor Pastor
+                    </th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                      Joining Date
+                    </th>
+                    {% if user.is_authenticated %}
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                        Actions
+                      </th>
+                    {% endif %}
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for disciple in disciples %}
+                    <tr>
+                      <td>
+                        <div class="d-flex px-2 py-1">
+                          <div>
+                            <i class="material-icons opacity-6 me-3">person</i>
+                          </div>
+                          <div
+                              class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-sm">{{ disciple.full_name }}</h6>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <p class="text-xs font-weight-bold mb-0">{{ disciple.email|default:"-" }}</p>
+                      </td>
+                      <td>
+                        <p class="text-xs font-weight-bold mb-0">
+                          {% if disciple.church %}
+                            <a href="{% url "religious_atlas:church_detail" pk=disciple.church.pk %}">{{ disciple.church.name }}</a>
+                          {% else %}
+                            -
+                          {% endif %}
+                        </p>
+                      </td>
+                      <td>
+                        <p class="text-xs font-weight-bold mb-0">
+                          {% if disciple.mentor_pastor %}
+                            <a href="{% url "religious_atlas:pastor_detail" pk=disciple.mentor_pastor.pk %}">{{ disciple.mentor_pastor.get_full_name|default:disciple.mentor_pastor.username }}</a>
+                          {% else %}
+                            -
+                          {% endif %}
+                        </p>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span
+                            class="text-secondary text-xs font-weight-bold">{{ disciple.joining_date|date:"d.m.Y"|default:"-" }}</span>
+                      </td>
+                      {% if user.is_authenticated %}
+                        <td class="align-middle text-center">
+                          <a href="{% url 'religious_atlas:disciple_edit' pk=disciple.pk %}"
+                             class="btn btn-link text-info px-2 mb-0">
+                            <i class="material-icons text-sm">edit</i>
+                          </a>
+                          <a href="{% url 'religious_atlas:disciple_delete' pk=disciple.pk %}"
+                             class="btn btn-link text-danger px-2 mb-0">
+                            <i class="material-icons text-sm">delete</i>
+                          </a>
+                        </td>
+                      {% endif %}
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          {% else %}
+            <div class="card">
+              <div class="card-body text-center">
+                <p class="text-muted mb-0">
+                  No disciples found.
+                  {% if search_query %}
+                    For your query "<strong>{{ search_query }}</strong>".
+                  {% endif %}
+                </p>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if is_paginated %}
+        <div class="row mt-4">
+          <div class="col-12">
+            {% include "includes/pagination.html" %}
+          </div>
+        </div>
+      {% endif %}
+
+    </div>
+  </section>
 {% endblock %}
