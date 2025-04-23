@@ -1,42 +1,94 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}{{ religion.name }}{% endblock %}
 
 {% block content %}
-  <h1>{{ religion.name }}</h1>
+  <section class="py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-9 col-md-11">
+          <div class="card shadow-lg">
+            <div class="card-body p-4">
 
-  {% if user.is_authenticated %}
-    <p>
-      <a href="{% url 'religious_atlas:religion_edit' pk=religion.pk %}">Edit</a>
-      |
-      <a href="{% url 'religious_atlas:religion_delete' pk=religion.pk %}"
-         style="color: red;">Delete</a>
-    </p>
-    <hr>
-  {% endif %}
+              <div class="row align-items-center">
 
-  {% if religion.icon %}
-    <img src="{{ religion.icon.url }}" alt="{{ religion.name }} icon"
-         style="max-width: 100px; float: right;">
-  {% endif %}
-  <p><strong>Founded
-    date:</strong> {{ religion.founded_date|default:"No info" }}</p>
-  <p><strong>Description:</strong></p>
-  <p>{{ religion.description|linebreaks|default:"No description." }}</p>
-  <hr>
-  <h2>Church for this religion</h2>
-  {% if related_churches %}
-    <ul>
-      {% for church in related_churches %}
-        <li>{{ church.name }}</li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>No info for churches in this religion.</p>
-  {% endif %}
+                <div class="col-md-3 text-center mb-4 mb-md-0">
+                  <div
+                      style="height: 150px; display: flex; align-items: center; justify-content: center;">
+                    {% if religion.icon %}
+                      <img src="{{ religion.icon.url }}"
+                           alt="{{ religion.name }} icon"
+                           class="img-fluid rounded shadow-sm"
+                           style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                    {% else %}
+                      <i class="material-icons opacity-3"
+                         style="font-size: 6rem;">category</i>
+                    {% endif %}
+                  </div>
+                </div>
 
-  <hr>
-  <a href="{% url 'religious_atlas:religion_list' %}">Back to religions
-    list.</a>
+                <div class="col-md-9">
+                  <div
+                      class="d-flex justify-content-between align-items-center mb-2">
+                    <h2 class="mb-0">{{ religion.name }}</h2>
+                    {% if user.is_authenticated %}
+                      <div>
+                        <a href="{% url 'religious_atlas:religion_edit' pk=religion.pk %}"
+                           class="btn btn-sm btn-outline-info mb-0 me-1 px-3">
+                          <i class="material-icons text-sm">edit</i> Edit
+                        </a>
+                        <a href="{% url 'religious_atlas:religion_delete' pk=religion.pk %}"
+                           class="btn btn-sm btn-outline-danger mb-0 px-3">
+                          <i class="material-icons text-sm">delete</i> Delete
+                        </a>
+                      </div>
+                    {% endif %}
+                  </div>
 
+                  <p class="text-muted">
+                    <small>Founded: {{ religion.founded_date|default:"No info" }}</small>
+                  </p>
+
+                  <h6 class="mt-4">Description:</h6>
+                  <p>{{ religion.description|linebreaks|default:"No description provided." }}</p>
+
+                </div>
+              </div>
+
+              <hr class="horizontal dark my-4">
+
+              <div>
+                <h4 class="mb-3">Churches of this Religion</h4>
+                {% if related_churches %}
+                  <ul class="list-group list-group-flush">
+                    {% for church in related_churches %}
+                      <li class="list-group-item ps-0">
+                        <a href="{% url 'religious_atlas:church_detail' pk=church.pk %}">{{ church.name }}</a>
+                        {% if church.city %}<small class="text-muted">
+                          - {{ church.city }}</small>{% endif %}
+                      </li>
+                    {% endfor %}
+                  </ul>
+                {% else %}
+                  <p class="text-muted">No churches found for this
+                    religion.</p>
+                {% endif %}
+              </div>
+
+            </div>
+          </div>
+
+          <div class="text-center mt-4">
+            <a href="{% url 'religious_atlas:religion_list' %}"
+               class="btn btn-outline-secondary">
+              <i class="material-icons text-sm align-middle">arrow_back</i>
+              Back to Religions List
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
 {% endblock %}

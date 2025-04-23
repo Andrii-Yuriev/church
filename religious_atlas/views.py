@@ -116,7 +116,7 @@ class ChurchListView(ListView):
             )
         return queryset
 
-    def context_data(self, **kwargs):
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(get_common_counts())
         context["search_query"] = self.request.GET.get("q", "")

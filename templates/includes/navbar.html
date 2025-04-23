@@ -66,8 +66,8 @@
             <form method="post" action="{% url 'logout' %}" class="d-inline">
               {% csrf_token %}
               <button type="submit"
-                      class="btn btn-link nav-link ps-2 d-flex cursor-pointer align-items-center py-0"
-                      style="text-transform: none; font-size: inherit;">
+                      class="btn btn-link nav-link ps-2 d-flex cursor-pointer align-items-center"
+                      style="text-transform: none; font-size: inherit; position: relative; top: -2px;">
                 <i class="material-icons opacity-6 me-1 text-md">logout</i>
                 Logout ({{ user.username }})
               </button>
