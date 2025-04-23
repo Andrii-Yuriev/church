@@ -24,6 +24,12 @@ def get_common_counts():
     }
 
 
+def home_view(request):
+    context = get_common_counts()
+    template_name = "religious_atlas/home.html"
+    return render(request, template_name, context=context)
+
+
 class ReligionListView(ListView):
     model = Religion
     template_name = "religious_atlas/religion_list.html"

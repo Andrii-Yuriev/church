@@ -20,9 +20,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 from religious_atlas import views as atlas_views
 from religious_atlas.views import ReligionListView
+from religious_atlas.views import  home_view
 
 urlpatterns = [
-    path("", ReligionListView.as_view(), name="home"),
+    path("", home_view, name="home"),
     path("admin/", admin.site.urls),
     path("atlas/", include("religious_atlas.urls",
                            namespace="religious_atlas")),
@@ -33,3 +34,5 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL,
+                          document_root=settings.STATIC_ROOT)
