@@ -207,6 +207,7 @@ class PastorListView(ListView):
                     religion__name__icontains=search_query))
             )
         queryset = queryset.filter(is_superuser=False)
+        queryset = queryset.order_by("last_name", "first_name")
         return queryset
 
     def get_context_data(self, **kwargs):
