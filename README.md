@@ -44,3 +44,52 @@ within these domains.
 * **Frontend:** HTML5, CSS3, JavaScript
 * **UI Kit:** Material Kit 2 (based on Bootstrap 5)
 * **Database:** SQLite
+
+## Installation
+
+To set up and run the project locally, follow these steps:
+
+1.  **Clone the repository:**
+    ```bash
+    git clone <URL_your_repo>
+    cd <project_folder_name>
+    ```
+
+2.  **Create a virtual environment:**
+    It's highly recommended to use a virtual environment to manage project dependencies.
+    ```bash
+    python -m venv venv
+    ```
+
+3.  **Activate the virtual environment:**
+    *   On macOS/Linux:
+        ```bash
+        source venv/bin/activate
+        ```
+    *   On Windows:
+        ```bash
+        venv\Scripts\activate
+        ```
+
+4.  **Install dependencies:**
+    Install all required packages using pip and the `requirements.txt` file.
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+5.  **Apply database migrations:**
+    ```bash
+    python manage.py migrate
+    ```
+
+6.  **Create a superuser (optional, for accessing Django admin):**
+    ```bash
+    python manage.py createsuperuser
+    ```
+
+7.  **Run the development server:**
+    ```bash
+    python manage.py runserver
+    ```
+
+    The application should now be running at `http://127.0.0.1:8000/`.
