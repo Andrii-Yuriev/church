@@ -19,15 +19,15 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from religious_atlas import views as atlas_views
-from religious_atlas.views import ReligionListView
-from religious_atlas.views import  home_view
+from religious_atlas.views import HomeView, RegistrationView
 
 urlpatterns = [
-    path("", home_view, name="home"),
+    path("", HomeView.as_view(), name="home"),
     path("admin/", admin.site.urls),
     path("atlas/", include("religious_atlas.urls",
                            namespace="religious_atlas")),
-    path("accounts/register/", atlas_views.register_view, name="register"),
+    path("accounts/register/", RegistrationView.as_view(),
+         name="register"),
     path("accounts/", include("django.contrib.auth.urls")),
 ]
 

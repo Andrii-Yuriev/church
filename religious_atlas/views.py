@@ -1,5 +1,10 @@
 from django.db.models import Q
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import (
+    CreateView,
+    UpdateView,
+    DeleteView,
+    FormView)
+from django.views.generic import TemplateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView
@@ -24,10 +29,13 @@ def get_common_counts():
     }
 
 
-def home_view(request):
-    context = get_common_counts()
+class HomeView(TemplateView):
     template_name = "religious_atlas/home.html"
-    return render(request, template_name, context=context)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(get_common_counts())
+        return context
 
 
 class ReligionListView(ListView):
@@ -359,17 +367,12 @@ class DiscipleDeleteView(LoginRequiredMixin, DeleteView):
         return context
 
 
-def register_view(request):
-    if request.method == "POST":
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect("/")
-        else:
-            pass
-    else:
-        form = RegistrationForm()
+class RegistrationView(FormView):
+    template_name = "registration/register.html"
+    form_class = RegistrationForm
+    success_url = reverse_lazy("/")
 
-    context = {"form": form}
-    return render(request, "registration/register.html", context)
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return super().form_valid(form)
