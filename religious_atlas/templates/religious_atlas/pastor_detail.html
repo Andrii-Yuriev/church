@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+  {{ pastor.get_full_name|default:pastor.username }}{% endblock %}
+
+{% block content %}
+  <section class="py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-9 col-md-11">
+          <div class="card shadow-lg">
+            <div class="card-body p-4">
+
+              <div class="row align-items-center mb-4">
+                <div class="col-md-3 text-center mb-4 mb-md-0">
+                  <div
+                      style="height: 150px; display: flex; align-items: center; justify-content: center;">
+                    {% if pastor.photo %}
+                      <img src="{{ pastor.photo.url }}"
+                           alt="Photo {{ pastor.get_full_name|default:pastor.username }}"
+                           class="img-fluid rounded-circle shadow-sm"
+                           style="max-height: 100%; max-width: 100%; object-fit: cover;">
+                    {% else %}
+                      <i class="material-icons opacity-3"
+                         style="font-size: 6rem;">account_circle</i>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="col-md-9">
+                  <div
+                      class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="me-3">
+                      <h2 class="mb-0">{{ pastor.get_full_name|default:pastor.username }}</h2>
+                      <p class="text-muted mb-1">
+                        <small>Username: {{ pastor.username }}</small></p>
+                      <div class="d-flex flex-wrap text-muted mt-1">
+                        {% if pastor.religion %}
+                          <small
+                              class="me-3 d-inline-flex align-items-center mb-1">
+                            <i class="material-icons opacity-6 fs-6 me-1">account_balance</i>
+                            <a href="{% url 'religious_atlas:religion_detail' pk=pastor.religion.pk %}"
+                               class="text-muted">{{ pastor.religion.name }}</a>
+                          </small>
+                        {% endif %}
+                        {% if pastor.email %}
+                          <small
+                              class="me-3 d-inline-flex align-items-center mb-1">
+                            <i class="material-icons opacity-6 fs-6 me-1">email</i>{{ pastor.email }}
+                          </small>
+                        {% endif %}
+                        {% if pastor.date_joined %}
+                          <small class="d-inline-flex align-items-center mb-1">
+                            <i class="material-icons opacity-6 fs-6 me-1">event</i>Joined: {{ pastor.date_joined|date:"d M Y" }}
+                          </small>
+                        {% endif %}
+                      </div>
+                    </div>
+                    {% if user.is_staff or user.pk == pastor.pk %}
+                      <div class="flex-shrink-0">
+                        <a href="{% url 'religious_atlas:pastor_edit' pk=pastor.pk %}"
+                           class="btn btn-sm btn-outline-info d-block mb-1 px-3">
+                          <i class="material-icons text-sm">edit</i> Edit
+                          Profile
+                        </a>
+                        {% if user.is_staff %}
+                          <a href="{% url 'religious_atlas:pastor_delete' pk=pastor.pk %}"
+                             class="btn btn-sm btn-outline-danger d-block px-3">
+                            <i class="material-icons text-sm">delete</i> Delete
+                            User
+                          </a>
+                        {% endif %}
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              {% if pastor.bio %}
+                <hr class="horizontal dark my-3">
+                <div>
+                  <h6 class="mb-1">Biography:</h6>
+                  <p class="text-sm">{{ pastor.bio|linebreaks }}</p>
+                </div>
+              {% endif %}
+
+
+              {% if serving_churches %}
+                <hr class="horizontal dark my-4">
+                <div>
+                  <h4 class="mb-3">Serves in Churches</h4>
+                  <ul class="list-group list-group-flush">
+                    {% for church in serving_churches %}
+                      <li class="list-group-item ps-0 d-flex align-items-center">
+                        {% if church.photo %}
+                          <img src="{{ church.photo.url }}"
+                               alt="{{ church.name }}"
+                               class="avatar avatar-sm me-3">
+                        {% else %}
+                          <i class="material-icons opacity-6 me-3">church</i>
+                        {% endif %}
+                        <div>
+                          <a href="{% url 'religious_atlas:church_detail' pk=church.pk %}">{{ church.name }}</a>
+                          {% if church.religion %}<br><small
+                              class="text-muted">({{ church.religion.name }})</small>{% endif %}
+                        </div>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              {% endif %}
+
+              {% if mentors %}
+                <hr class="horizontal dark my-4">
+                <div>
+                  <h4 class="mb-3">Mentoring Disciples</h4>
+                  <ul class="list-group list-group-flush">
+                    {% for disciple in mentors %}
+                      <li class="list-group-item ps-0 d-flex align-items-center">
+                        <i class="material-icons opacity-6 me-3">person</i>
+                        <div>
+                          {{ disciple.full_name }}
+                          {% if disciple.church %}<br>
+                            <small class="text-muted">(from <a
+                                href="{% url 'religious_atlas:church_detail' pk=disciple.church.pk %}">{{ disciple.church.name }}</a>)</small>{% endif %}
+                        </div>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              {% endif %}
+
+            </div>
+          </div>
+
+          <div class="text-center mt-4">
+            <a href="{% url 'religious_atlas:pastor_list' %}"
+               class="btn btn-outline-secondary">
+              <i class="material-icons text-sm align-middle">arrow_back</i>
+              Back to Pastors List
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

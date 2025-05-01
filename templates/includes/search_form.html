@@ -1,0 +1,29 @@
+{% load static %}
+
+<div class="col-lg-7 col-md-9 mb-4 px-0">
+
+  <form method="get" action="{{ request.path }}">
+    <div class="row align-items-center">
+
+      <div class="col-md-8 col-lg-9">
+        <div
+            class="input-group input-group-outline {% if search_query %}is-filled{% endif %}">
+          <input type="text"
+                 class="form-control"
+                 name="q"
+                 placeholder="Search..."
+                 value="{{ search_query | default:'' }}">
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3">
+        <button type="submit" class="btn btn-primary mb-0 w-100">
+          <i class="material-icons opacity-6 me-1">search</i>
+          Search
+        </button>
+      </div>
+
+    </div>
+  </form>
+
+</div>

@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% load static widget_tweaks %}
+
+{% block title %}{{ view_title|default:"Form" }}{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 col-md-10">
+        <div class="card shadow-lg">
+          <div class="card-header p-3 pt-4">
+            <h5 class="card-title text-center mb-0">{{ view_title|default:"Form" }}</h5>
+          </div>
+          <div class="card-body pt-3">
+            <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+
+              {% if form.non_field_errors %}
+                <div class="alert alert-danger text-white mb-3" role="alert">
+                  {% for error in form.non_field_errors %} {{ error }} {% endfor %}
+                </div>
+              {% endif %}
+
+              {% for field in form %}
+                <div class="mb-3 {% if field.field.widget.input_type|lower == 'file' %}mb-4{% endif %}">
+
+                  {% if field.field.widget.input_type|lower != 'checkbox' %}
+                    <label for="{{ field.id_for_label }}" class="form-label ms-0">{{ field.label }}</label>
+                  {% endif %}
+
+                  {% if field.help_text %}
+                    <p class="form-text text-muted mt-0 mb-1 ms-0"><small>{{ field.help_text|safe }}</small></p>
+                  {% endif %}
+
+                  {% if field.field.widget.input_type|lower == 'file' %}
+                     {% render_field field style="display: none;" id=field.id_for_label %}
+                     <div class="d-flex align-items-center">
+                        <label for="{{ field.id_for_label }}" class="btn bg-gradient-primary btn-sm mb-0 me-2 ms-0">
+                           Choose File
+                        </label>
+                        <span class="text-muted align-middle">
+                            {% if field.value %}
+                               <small>Current: <a href="{{ field.value.url }}">{{ field.value.name|truncatechars:30 }}</a></small>
+                                {% if not field.field.required %}
+                                  <div class="form-check form-check-inline ms-1">
+                                    <input type="checkbox" name="{{ field.html_name }}-clear" id="{{ field.html_name }}-clear_id" class="form-check-input">
+                                    <label for="{{ field.html_name }}-clear_id" class="form-check-label text-xs">Clear</label>
+                                  </div>
+                                {% endif %}
+                            {% else %}
+                               <small id="{{ field.id_for_label }}_text">No file chosen</small>
+                            {% endif %}
+                        </span>
+                     </div>
+                  {% elif field.field.widget.input_type|lower == 'checkbox' %}
+                      <div class="form-check form-switch ms-0 {% if field.errors %}is-invalid{% endif %}">
+                        {% render_field field class+="form-check-input" %}
+                        <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                      </div>
+                  {% else %}
+                      <div class="input-group input-group-outline {% if field.errors %}is-invalid{% endif %} {% if field.value %}is-filled{% endif %}">
+                        {% if field.field.widget.template_name|slice:"-12:" == 'select.html' %}
+                           {% render_field field class+="form-select" %}
+                        {% elif field.field.widget.template_name|slice:"-13:" == 'textarea.html' %}
+                           {% render_field field class+="form-control" rows="4" %}
+                        {% else %}
+                           {% render_field field class+="form-control" %}
+                        {% endif %}
+                      </div>
+                  {% endif %}
+
+                  {% for error in field.errors %}
+                    <div class="{% if field.field.widget.input_type|lower == 'file' %}text-danger mt-1{% elif field.field.widget.input_type|lower == 'checkbox' %}text-danger mt-1 ps-4{% else %}invalid-feedback d-block{% endif %} ms-0"><small>{{ error }}</small></div>
+                  {% endfor %}
+                </div>
+              {% endfor %}
+
+              <div class="text-center mt-4">
+                <button type="submit" class="btn bg-gradient-primary me-2 ms-0">Save</button>
+                {% if cancel_url %}
+                  <a href="{{ cancel_url }}" class="btn btn-outline-secondary ms-0">Cancel</a>
+                {% endif %}
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const fileInputs = document.querySelectorAll('input[type="file"][style*="display: none"]');
+    fileInputs.forEach(function(fileInput) {
+      const textElementId = fileInput.id + '_text';
+      const textElement = document.getElementById(textElementId);
+      if (textElement) {
+        fileInput.addEventListener('change', function () {
+          if (this.files && this.files.length > 0) {
+            textElement.textContent = this.files[0].name;
+          } else {
+             const currentFileLink = textElement.parentNode.querySelector('a[href]');
+             if (!currentFileLink) {
+                 textElement.textContent = 'No file chosen';
+             }
+          }
+        });
+      }
+    });
+  });
+</script>
+
+{% endblock %}

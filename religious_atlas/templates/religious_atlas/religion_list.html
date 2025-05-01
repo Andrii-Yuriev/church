@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Religions List{% endblock %}
+
+{% block content %}
+  <section class="py-5">
+    <div class="container">
+
+      <div class="row mb-4 align-items-center">
+        <div class="col-lg-9 col-md-8">
+          <h1 class="mb-0">Religions List</h1>
+        </div>
+        <div class="col-lg-3 col-md-4 text-md-end">
+          {% if user.is_authenticated %}
+            <a href="{% url 'religious_atlas:religion_add' %}"
+               class="btn bg-gradient-primary mb-0">
+              <i class="material-icons text-white opacity-10 me-1">add</i>
+              Add New Religion
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          {% include "includes/search_form.html" %}
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-12">
+          {% if religions %}
+            {% for religion in religions %}
+              <div class="card mb-3">
+                <div class="card-body">
+                  <div class="row align-items-center">
+
+                    <div class="col-2 text-center">
+                      {% if religion.icon %}
+                        <img src="{{ religion.icon.url }}"
+                             alt="{{ religion.name }} icon"
+                             class="img-fluid rounded d-block mx-auto"
+                             style="max-height: 50px;">
+                      {% else %}
+                        <i class="material-icons opacity-3"
+                           style="font-size: 2.5rem;">category</i>
+                      {% endif %}
+                    </div>
+
+                    <div class="col-10">
+                      <h5 class="card-title mb-0">
+                        <a href="{% url 'religious_atlas:religion_detail' pk=religion.pk %}">
+                          {{ religion.name }}
+                        </a>
+                      </h5>
+                      {% if religion.founded_date %}
+                        <p class="card-text text-muted mb-2">
+                          <small>Founded: {{ religion.founded_date }}</small>
+                        </p>
+                      {% endif %}
+                      <p class="card-text mb-0">{{ religion.description|truncatewords:25 }}</p>
+                      <div class="mt-2">
+                        {% if user.is_authenticated %}
+                          <a href="{% url 'religious_atlas:religion_edit' pk=religion.pk %}"
+                             class="btn btn-sm btn-outline-info mb-0 me-1">Edit</a>
+                          <a href="{% url 'religious_atlas:religion_delete' pk=religion.pk %}"
+                             class="btn btn-sm btn-outline-danger mb-0">Delete</a>
+                        {% endif %}
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="card">
+              <div class="card-body text-center">
+                <p class="text-muted mb-0">
+                  No religions found.
+                  {% if search_query %}
+                    For your query "<strong>{{ search_query }}</strong>".
+                  {% endif %}
+                </p>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      {% if is_paginated %}
+        <div class="row mt-4">
+          <div class="col-12">
+            {% include "includes/pagination.html" %}
+          </div>
+        </div>
+      {% endif %}
+
+    </div>
+  </section>
+{% endblock %}
