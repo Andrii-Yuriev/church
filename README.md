@@ -10,40 +10,40 @@ within these domains.
 
 ## Core Features
 
-* **Data Management:** Manages interconnected data for four primary models:
-    * **Religion:** Information about different religions.
-    * **Church:** Details about specific churches, linked to a Religion.
-    * **Pastor:** User model (inheriting from `AbstractUser`) representing
-      pastors, potentially linked to a Religion and Churches.
-    * **Disciple:** Information about disciples, potentially linked to a Church
-      and a mentor Pastor.
-* **CRUD Operations:** Full Create, Read, Update, Delete functionality is
-  implemented for manageable models (Religion, Church, Disciple, Pastor profile
-  editing), allowing for easy data administration.
-* **Search Functionality:** Users can search across list views (Religions,
-  Churches, Pastors, Disciples) to quickly find relevant information.
-* **Pagination:** List views utilize pagination to efficiently handle
-  potentially large amounts of data.
-* **User Authentication:** Includes custom-styled pages for:
-    * Login
-    * Logout
-    * User Registration
-* **Responsive UI:** Integrated **Material Kit 2** for a modern, responsive
-  design that adapts to various screen sizes.
-* **Views:** Dedicated views for:
-    * Homepage providing an overview and entry points.
-    * List views for all core models.
-    * Detail views for Religion, Church, and Pastor models.
-* **Dynamic Data:** Utilizes context processors or direct context injection in
-  views to display dynamic counts (e.g., number of religions, churches) in the
-  navigation bar.
+*   **Data Management:** Manages interconnected data for four primary models:
+    *   **Religion:** Information about different religions.
+    *   **Church:** Details about specific churches, linked to a Religion.
+    *   **Pastor:** User model (inheriting from `AbstractUser`) representing
+        pastors, potentially linked to a Religion and Churches.
+    *   **Disciple:** Information about disciples, potentially linked to a Church
+        and a mentor Pastor.
+*   **CRUD Operations:** Full Create, Read, Update, Delete functionality is
+    implemented for manageable models (Religion, Church, Disciple, Pastor profile
+    editing), allowing for easy data administration.
+*   **Search Functionality:** Users can search across list views (Religions,
+    Churches, Pastors, Disciples) to quickly find relevant information.
+*   **Pagination:** List views utilize pagination to efficiently handle
+    potentially large amounts of data.
+*   **User Authentication:** Includes custom-styled pages for:
+    *   Login
+    *   Logout
+    *   User Registration
+*   **Responsive UI:** Integrated **Material Kit 2** for a modern, responsive
+    design that adapts to various screen sizes.
+*   **Views:** Dedicated views for:
+    *   Homepage providing an overview and entry points.
+    *   List views for all core models.
+    *   Detail views for Religion, Church, and Pastor models.
+*   **Dynamic Data:** Utilizes context processors or direct context injection in
+    views to display dynamic counts (e.g., number of religions, churches) in the
+    navigation bar.
 
 ## Technology Stack
 
-* **Backend:** Python, Django
-* **Frontend:** HTML5, CSS3, JavaScript
-* **UI Kit:** Material Kit 2 (based on Bootstrap 5)
-* **Database:** SQLite
+*   **Backend:** Python, Django
+*   **Frontend:** HTML5, CSS3, JavaScript
+*   **UI Kit:** Material Kit 2 (based on Bootstrap 5)
+*   **Database:** SQLite (used for local development, PostgreSQL recommended for production)
 
 ## Installation
 
@@ -71,25 +71,67 @@ To set up and run the project locally, follow these steps:
         venv\Scripts\activate
         ```
 
-4.  **Install dependencies:**
+4.  **Configure Environment Variables:**
+    The project uses environment variables for sensitive information and configuration.
+    Copy the example environment file and fill in the necessary values.
+
+    ```bash
+    cp .env.sample .env
+    # Open the .env file in your editor and fill in the values
+    ```
+
+    The `.env.sample` file looks like this:
+
+    ```
+    # .env.sample
+
+    # Django Secret Key (generate a new one for production!)
+    SECRET_KEY=your_django_secret_key
+    # Django settings module to use (e.g., church.settings.development or church.settings.production)
+    DJANGO_SETTINGS_MODULE=church.settings. # Customize your settings (dev, prod etc.)
+    # External hostname for Render deployment (needed for ALLOWED_HOSTS)
+    RENDER_EXTERNAL_HOSTNAME=<your domain> # e.g., religious-atlas.onrender.com
+
+    # Database configuration (example for PostgreSQL)
+    # For local development with SQLite, these might not be needed depending on your settings setup
+    POSTGRES_DB=<db_name>
+    POSTGRES_DB_PORT=<db_port>
+    POSTGRES_USER=<db_user>
+    POSTGRES_PASSWORD=<db_password>
+    POSTGRES_HOST=<db_host>
+
+    ```
+    Make sure to replace placeholder values (like `your_django_secret_key`, database credentials, etc.) with your actual configuration.
+
+5.  **Install dependencies:**
     Install all required packages using pip and the `requirements.txt` file.
     ```bash
     pip install -r requirements.txt
     ```
 
-5.  **Apply database migrations:**
+6.  **Apply database migrations:**
     ```bash
     python manage.py migrate
     ```
 
-6.  **Create a superuser (optional, for accessing Django admin):**
+7.  **Create a superuser (optional, for accessing Django admin):**
     ```bash
     python manage.py createsuperuser
     ```
 
-7.  **Run the development server:**
+8.  **Run the development server:**
     ```bash
     python manage.py runserver
     ```
 
     The application should now be running at `http://127.0.0.1:8000/`.
+
+## Demo
+
+The live demo of the application is available at:
+[https://religious-atlas.onrender.com/](https://religious-atlas.onrender.com/)
+
+You can log in with the following test credentials:
+
+*   **Username:** Test
+*   **Password:** 7654321C
