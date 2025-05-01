@@ -261,9 +261,7 @@ class PastorUpdateView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(get_common_counts())
-        context[
-            "view_title"] = f"Edit profile: {self.object.get_full_name()
-                                             or self.object.username}"
+        context["view_title"] = f"Edit profile: {self.object.get_full_name() or self.object.username}"
         context[
             "cancel_url"] = self.get_success_url()
         return context
